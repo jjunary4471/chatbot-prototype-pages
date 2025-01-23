@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Prototype</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    .chatbot-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: #000;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+    .chatbot-icon img {
+      width: 50%;
+      height: 50%;
+    }
+    .chatbot-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .chatbot-page h1 {
+      font-size: 24px;
+      color: #333;
+    }
+    .chatbot-page p {
+      margin: 10px 0;
+      font-size: 18px;
+      color: #666;
+      text-align: center;
+    }
+    .chatbot-page button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .survey-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f8f9fa;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .survey-page h1 {
+      font-size: 24px;
+      color: #333;
+    }
+    .survey-page button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-content">
+    <!-- <h1>메인 어플리케이션 화면</h1> -->
+    <h1>メインアプリケーション画面</h1>
+  </div>
+
+  <!-- Chatbot Icon -->
+  <div class="chatbot-icon" onclick="navigateToMain()">
+    <img src="./chatboticon.png" alt="Chatbot Icon">
+  </div>
+  <script>
+    function navigateToMain() {
+      window.location.href = "main.html";
+    }
+  </script></body>
+</html>

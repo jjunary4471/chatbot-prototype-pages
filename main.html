@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button {
+      display: block;
+      margin: 15px auto;
+      padding: 10px 20px;
+      font-size: 18px;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 200px;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+    }
+
+    .back-button {
+      background-color: #6c757d; /* 회색 */
+    }
+
+    .back-button:hover {
+      background-color: #495057; /* 어두운 회색 */
+    }
+  </style>
+</head>
+<body>
+  <h1>こんにちは！USER ID さん</h1>
+  <p>Type 診断が必要な場合は診断ボタンを押してください</p>
+  <button class="button" onclick="navigateTo('survey.html')">診断</button>
+
+  <p>相談が必要な場合は相談ボタンを押してください</p>
+  <button class="button" onclick="navigateTo('counseling.html')">相談</button>
+
+  <p>chat botの質問への返事をする場合は返事ボタンを押してください</p>
+  <button class="button" onclick="navigateTo('answer.html')">返事</button>
+
+  <!-- 돌아가기 버튼 -->
+  <button class="button back-button" onclick="navigateTo('index.html')">戻る</button>
+
+  <script>
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>

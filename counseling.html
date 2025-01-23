@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상담 페이지</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #chat-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 70%;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      padding: 10px;
+      display: inline-block;
+      font-size: 16px;
+    }
+
+    .bot-message {
+      background-color: #e1f5fe;
+      align-self: flex-start;
+    }
+
+    .user-message {
+      background-color: #c8e6c9;
+      align-self: flex-end;
+    }
+
+    #input-container {
+      display: flex;
+      padding: 10px;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+    }
+
+    #input-container input {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    #input-container button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #input-container button:hover {
+      background-color: #0056b3;
+    }
+
+    .back-button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #495057;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container"></div>
+  <div id="input-container">
+    <input type="text" id="userInput" placeholder="ここに質問を入力してください。">
+    <button onclick="sendMessage()">전송</button>
+  </div>
+  <button class="back-button" onclick="goBack()">戻る</button>
+
+  <script>
+    const chatContainer = document.getElementById("chat-container");
+    const userInput = document.getElementById("userInput");
+
+    // 초기 메시지 표시
+    addMessage("bot", "何でも相談できます！何かありましたか？");
+
+    function addMessage(sender, message) {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = sender === "bot" ? "message bot-message" : "message user-message";
+      messageDiv.textContent = message;
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight; // 스크롤 자동으로 하단으로 이동
+    }
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // 학생의 메시지 표시
+      addMessage("user", message);
+      userInput.value = "";
+
+      // 서버에 질문 전송
+      fetch("https://chatbot-prototype.onrender.com/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: message })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          addMessage("bot", data.answer); // 서버의 응답 표시
+        })
+        .catch((error) => {
+          addMessage("bot", "⚠️ 問題が発生しました.");
+          console.error(error);
+        });
+    }
+
+    function goBack() {
+      window.location.href = "main.html"; // 메인 페이지로 돌아가기
+    }
+  </script>
+</body>
+</html>

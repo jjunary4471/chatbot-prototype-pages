@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타입진단 페이지</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .question {
+      margin: 10px 0;
+    }
+
+    .question label {
+      margin-right: 20px;
+    }
+
+    .section-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .end-button {
+      background-color: #28a745;
+    }
+
+    .end-button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <h1>タイプ診断</h1>
+  <h2 id="section-title">セクション 1</h2>
+  <div class="section-container" id="survey-container">
+    <!-- 설문 질문 표시 -->
+  </div>
+  <div class="button-container">
+    <button id="next-button" onclick="handleButtonClick()">次の セクション</button>
+  </div>
+
+  <script>
+    let currentSectionIndex = 0;
+    let surveyData = [];
+    let scores = {}; // セクション별 점수를 저장 (딕셔너리 형태)
+    const surveyContainer = document.getElementById("survey-container");
+    const sectionTitle = document.getElementById("section-title");
+    const nextButton = document.getElementById("next-button");
+
+    // 타입진단 데이터 가져오기
+    fetch("https://chatbot-prototype.onrender.com/survey")
+      .then((response) => response.json())
+      .then((data) => {
+        surveyData = data.sections;
+        loadSection(currentSectionIndex);
+      })
+      .catch((error) => {
+        console.error("타입진단 데이터 가져오기 실패:", error);
+      });
+
+    // 현재 セクション 로드
+    function loadSection(index) {
+      surveyContainer.innerHTML = ""; // 기존 질문 제거
+      sectionTitle.textContent = `セクション ${index + 1}`;
+      nextButton.textContent = index === surveyData.length - 1 ? "診断 終了" : "次の セクション"; // 마지막 セクション이면 버튼 텍스트 변경
+      nextButton.classList.toggle("end-button", index === surveyData.length - 1); // 마지막 セクション이면 스타일 변경
+
+      const questions = surveyData[index];
+      questions.forEach((question, i) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question";
+
+        questionDiv.innerHTML = `
+          <p>${i + 1}. ${question.QuestionText}</p>
+          <label><input type="radio" name="question${i}" value="1"> はい</label>
+          <label><input type="radio" name="question${i}" value="0"> いいえ</label>
+        `;
+        surveyContainer.appendChild(questionDiv);
+      });
+    }
+
+    // セクション 점수 계산
+    function calculateSectionScore() {
+      const inputs = surveyContainer.querySelectorAll("input:checked");
+      const totalQuestions = surveyData[currentSectionIndex].length; // 현재 セクション의 질문 수
+
+      if (inputs.length < totalQuestions) {
+        alert(`全ての質問に答えてください! (${inputs.length}/${totalQuestions})`);
+        return null;
+      }
+
+      let score = 0;
+      inputs.forEach((input) => {
+        score += parseInt(input.value, 10);
+      });
+
+      return score;
+    }
+
+    // 버튼 클릭 처리
+    function handleButtonClick() {
+      const sectionScore = calculateSectionScore();
+      if (sectionScore === null) return;
+
+      const sectionName = surveyData[currentSectionIndex][0].QuestionText.split(" ")[0];
+      scores[sectionName] = sectionScore;
+
+      currentSectionIndex++;
+      if (currentSectionIndex < surveyData.length) {
+        loadSection(currentSectionIndex);
+      } else {
+        submitSurvey();
+      }
+    }
+
+    // 타입진단 결과 전송
+    function submitSurvey() {
+      fetch("https://chatbot-prototype.onrender.com/submit-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scores }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert("タイプ診断が終了しました。!");
+            setTimeout(() => {
+              window.location.href = "main.html"; // 메인 페이지로 이동
+            }, 500);
+          } else {
+            alert("⚠️ タイプ診断送信に失敗しました.");
+          }
+        })
+        .catch((error) => {
+          console.error("タイプ診断送信失敗:", error);
+        });
+    }
+  </script>
+</body>
+</html>
